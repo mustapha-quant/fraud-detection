@@ -1,0 +1,17 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+jupyter
+yfinance
+ta
+statsmodels
+tensorflow
+torch
+torchaudio
+torchvision
+stack-data
+scipy
+keras
+beautifulsoup4
