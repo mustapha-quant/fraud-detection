@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83c869e2-4c61-408a-b06c-aacb67b2151f" name="Changes" comment="" />
+    <list default="true" id="83c869e2-4c61-408a-b06c-aacb67b2151f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/notebooks/Phase4.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,7 +64,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1775494728732</updated>
-      <workItem from="1775494729880" duration="8307000" />
+      <workItem from="1775494729880" duration="10610000" />
     </task>
     <servers />
   </component>
