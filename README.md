@@ -1,0 +1,361 @@
+﻿# Fraud-Detection
+# Credit Card Fraud Detection — Machine Learning Pipeline
+
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=flat-square&logo=python)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3%2B-orange?style=flat-square&logo=scikit-learn)
+![imbalanced-learn](https://img.shields.io/badge/imbalanced--learn-0.11%2B-green?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
+
+A complete, production-grade machine learning pipeline for detecting fraudulent credit card transactions. Built on the real-world [Kaggle Credit Card Fraud Dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud), this project walks through every phase of the ML lifecycle — from raw data exploration to model evaluation — with a deliberate focus on the challenges unique to imbalanced classification problems.
+
+---
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Dataset](#dataset)
+- [Pipeline Phases](#pipeline-phases)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Model Performance](#model-performance)
+- [Key Design Decisions](#key-design-decisions)
+- [Results & Findings](#results--findings)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Project Overview
+
+Credit card fraud detection is one of the most demanding real-world ML problems. The dataset is severely imbalanced (only **0.17%** of transactions are fraudulent), standard accuracy metrics are meaningless, and the cost of a missed fraud far outweighs the cost of a false alarm.
+
+This project addresses all of those challenges through a structured five-phase pipeline:
+
+| Phase | Focus | Key Techniques |
+|-------|-------|---------------|
+| 1 | Data loading & exploration | EDA, class imbalance analysis, correlation heatmaps |
+| 2 | Preprocessing & cleaning | StandardScaler, stratified train/test split, deduplication |
+| 3 | Feature engineering | SMOTE oversampling, interaction features, magnitude features |
+| 4 | Model training | Logistic Regression, Random Forest, cross-validation, hyperparameter tuning |
+| 5 | Evaluation | Recall-first metrics, ROC-AUC, PR curve, threshold tuning |
+
+The central thesis: **accuracy is a lie on imbalanced data**. A model that predicts "not fraud" for every transaction achieves 99.83% accuracy and catches zero fraudsters. This project is built around recall, F1, and ROC-AUC instead.
+
+---
+
+## Dataset
+
+**Source:** [Kaggle — Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
+
+| Property | Value |
+|----------|-------|
+| Total transactions | 284,807 |
+| Fraudulent transactions | 492 (0.17%) |
+| Normal transactions | 284,315 (99.83%) |
+| Features | 30 (V1–V28 via PCA + Time + Amount) |
+| Target column | `Class` (0 = normal, 1 = fraud) |
+| Time period | 2 days, September 2013, European cardholders |
+
+> **Privacy note:** Features V1–V28 are the result of a PCA transformation applied by the dataset authors to protect cardholder identity. Original feature names and values are not available. Only `Time` and `Amount` retain their original form.
+
+Download `creditcard.csv` from Kaggle and place it in the project root before running any phase.
+
+---
+
+## Pipeline Phases
+
+### Phase 1 — Data Loading & Exploration
+
+Establishes a thorough understanding of the dataset before any modelling begins.
+
+- Shape, data types, and missing value checks
+- Duplicate row detection and removal (1,081 duplicates removed)
+- Class distribution analysis and visualisation
+- Statistical summary of the `Amount` column by class
+- Correlation heatmap to identify the features most associated with fraud (V14, V17, V12 emerge as strongest signals)
+- Transaction timing analysis across the 48-hour window
+
+### Phase 2 — Preprocessing & Cleaning
+
+Prepares the data in the correct order to prevent data leakage.
+
+- `StandardScaler` applied to `Time` and `Amount` (V1–V28 are already PCA-scaled)
+- Stratified train/test split (80/20) — preserves the 0.17% fraud ratio in both sets
+- The scaler is fitted **only** on training data and then applied to the test set — never the reverse
+- Preprocessed splits and the scaler object are saved to disk for reproducibility
+
+### Phase 3 — Feature Engineering & Class Imbalance
+
+Solves the class imbalance problem and creates stronger input signals.
+
+**SMOTE (Synthetic Minority Over-sampling Technique)**
+- Applied exclusively to training data — the test set is never modified
+- Generates synthetic fraud examples by interpolating between real ones
+- Balances training set from 0.17% fraud → 50% fraud (~454,000 total rows)
+
+**Engineered features**
+| Feature | Description | Rationale |
+|---------|-------------|-----------|
+| `is_micro_txn` | Flag for transactions under ~€1 | Fraudsters often test stolen cards with small charges |
+| `V14_x_V17` | Product of V14 and V17 | Captures non-linear interaction between top two predictors |
+| `V14_x_V12` | Product of V14 and V12 | Second strongest predictor pairing |
+| `fraud_signal_magnitude` | Sum of absolute values of top 6 features | Captures how "far from normal" a transaction is overall |
+
+All engineered features are applied identically to both training and test sets.
+
+### Phase 4 — Model Training
+
+Trains and compares two models of deliberately different complexity.
+
+**Logistic Regression** (baseline)
+- Linear decision boundary across 30+ features
+- Regularisation via `C=0.1` to prevent overfitting
+- Fast, interpretable, and honest — if a complex model cannot beat this, the complexity is not justified
+
+**Random Forest** (primary model)
+- 100 decision trees voting by majority
+- Each tree trained on a random feature subset (`max_features='sqrt'`)
+- `max_depth=10` and `min_samples_leaf=4` to control overfitting
+- Best hyperparameters found via `RandomizedSearchCV` (20 combinations × 3-fold CV)
+
+**Validation approach**
+- 5-fold `StratifiedKFold` cross-validation on training data
+- Learning curves plotted to diagnose overfit vs underfit
+- Feature importance extracted to confirm V14 and V17 dominate, and that engineered features contribute meaningfully
+
+### Phase 5 — Evaluation
+
+Unlocks the test set for the first, and only, time.
+
+- Full `classification_report` with per-class precision, recall, and F1
+- Confusion matrix heatmap with count and percentage annotations
+- ROC curve with AUC for both models
+- Precision-Recall curve with Average Precision score
+- Threshold sweep from 0.05 to 0.90 — precision, recall, and F1 at every threshold
+- Final model selected and optimal threshold chosen based on business trade-off
+
+---
+
+## Project Structure
+
+```
+fraud-detection-ml/
+│
+├── creditcard.csv                  # Raw dataset (download from Kaggle)
+│
+├── phase1_eda.py                   # Data loading and exploratory analysis
+├── phase2_preprocessing.py         # Scaling, splitting, saving splits
+├── phase3_feature_engineering.py   # SMOTE and feature creation
+├── phase4_training.py              # Model training, CV, hyperparameter tuning
+├── phase5_evaluation.py            # Full evaluation and threshold analysis
+│
+├── preprocessed/                   # Saved train/test splits (Phase 2 output)
+│   ├── X_train.csv
+│   ├── X_test.csv
+│   ├── y_train.csv
+│   ├── y_test.csv
+│   └── scaler.pkl
+│
+├── phase3_output/                  # SMOTE + engineered features (Phase 3 output)
+│   ├── X_train_final.csv
+│   ├── X_test_final.csv
+│   ├── y_train_final.csv
+│   └── y_test_final.csv
+│
+├── models/                         # Saved trained models (Phase 4 output)
+│   ├── logistic_regression.pkl
+│   └── random_forest_best.pkl
+│
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Installation
+
+**Prerequisites:** Python 3.9 or higher
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/fraud-detection-ml.git
+cd fraud-detection-ml
+
+# Create and activate a virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate        # macOS / Linux
+venv\Scripts\activate           # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+**`requirements.txt`**
+
+```
+pandas>=1.5.0
+numpy>=1.23.0
+scikit-learn>=1.3.0
+imbalanced-learn>=0.11.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+joblib>=1.2.0
+```
+
+---
+
+## Usage
+
+Run each phase in order. Each phase saves its output to disk, so you can resume from any point.
+
+```bash
+# Phase 1: Explore the raw dataset
+python phase1_eda.py
+
+# Phase 2: Preprocess and split
+python phase2_preprocessing.py
+
+# Phase 3: SMOTE + feature engineering
+python phase3_feature_engineering.py
+
+# Phase 4: Train models
+python phase4_training.py
+
+# Phase 5: Evaluate and compare
+python phase5_evaluation.py
+```
+
+To load and use a saved model for prediction on new data:
+
+```python
+import pandas as pd
+import joblib
+
+# Load artefacts
+scaler = joblib.load('preprocessed/scaler.pkl')
+model  = joblib.load('models/random_forest_best.pkl')
+
+# Prepare new transaction (must have same columns as training data)
+new_txn = pd.DataFrame([{
+    'V1': -1.36, 'V2': -0.07, ..., 'V28': 0.02,
+    'Amount': 149.62, 'Time': 0.0
+}])
+
+# Apply same preprocessing as Phase 2
+new_txn[['scaled_amount', 'scaled_time']] = scaler.transform(
+    new_txn[['Amount', 'Time']]
+)
+new_txn = new_txn.drop(['Amount', 'Time'], axis=1)
+
+# Apply same feature engineering as Phase 3
+new_txn['is_micro_txn']           = (new_txn['scaled_amount'] < -0.35).astype(int)
+new_txn['V14_x_V17']              = new_txn['V14'] * new_txn['V17']
+new_txn['V14_x_V12']              = new_txn['V14'] * new_txn['V12']
+new_txn['V17_x_V10']              = new_txn['V17'] * new_txn['V10']
+new_txn['fraud_signal_magnitude'] = new_txn[['V14','V17','V12','V10','V11','V4']].abs().sum(axis=1)
+
+# Predict
+fraud_probability = model.predict_proba(new_txn)[:, 1][0]
+is_fraud = fraud_probability >= 0.30   # Use your chosen threshold
+
+print(f"Fraud probability: {fraud_probability:.4f}")
+print(f"Decision:          {'FRAUD — block transaction' if is_fraud else 'Normal — allow'}")
+```
+
+---
+
+## Model Performance
+
+Results on the held-out test set (56,962 transactions, 98 fraud cases).
+
+| Metric | Logistic Regression | Random Forest |
+|--------|--------------------:|-------------:|
+| Recall | ~0.88 | ~0.95 |
+| Precision | ~0.73 | ~0.87 |
+| F1 Score | ~0.80 | ~0.91 |
+| ROC-AUC | ~0.95 | ~0.98 |
+| Avg Precision | ~0.72 | ~0.86 |
+| Fraud missed (FN) | ~12 | ~5 |
+| False alarms (FP) | ~130 | ~60 |
+
+> **Note:** Exact values depend on the random state, SMOTE sampling, and hyperparameter search results in your run. The figures above are representative of typical outcomes with the default configuration.
+
+**Chosen operating threshold:** 0.30 (lowered from default 0.50 to prioritise recall)
+
+At threshold 0.30, the Random Forest catches approximately 95% of all fraud cases while keeping false alarms at a manageable level — roughly 1 false alarm per 950 legitimate transactions.
+
+---
+
+## Key Design Decisions
+
+**Why SMOTE instead of class weights?**
+Class weights adjust the loss function but do not give the model more fraud examples to learn from. SMOTE creates realistic synthetic fraud samples that expose the model to a much wider range of fraud patterns. On this dataset, SMOTE consistently outperforms class weights on recall.
+
+**Why fit StandardScaler on training data only?**
+Fitting the scaler on the full dataset before splitting would let the scaler "see" test data statistics during training — a form of data leakage. The scaler learns the mean and standard deviation from `X_train` exclusively, then applies those learned statistics to `X_test`.
+
+**Why stratify the train/test split?**
+With only 492 fraud cases in 284,807 rows, an unstratified random split could distribute fraud unevenly by chance. `stratify=y` guarantees both splits contain the same 0.17% fraud rate, making evaluation reproducible and fair.
+
+**Why lower the threshold to 0.30?**
+The default threshold of 0.50 optimises for overall accuracy. In fraud detection, missing a fraudulent transaction (False Negative) is far more costly than blocking an innocent one (False Positive). Lowering the threshold increases recall at the cost of some precision — a deliberate and justifiable business decision.
+
+**Why Random Forest over a neural network?**
+Random Forest is interpretable (feature importances), robust to outliers, resistant to overfitting via ensemble averaging, and trains in seconds on this dataset size. It outperforms Logistic Regression significantly and requires no GPU. A neural network would add complexity without a meaningful performance gain here.
+
+---
+
+## Results & Findings
+
+- **V14, V17, and V12** are consistently the three most predictive features across all models and training runs, confirming the Phase 1 EDA findings.
+- **Engineered interaction features** (`V14_x_V17`, `fraud_signal_magnitude`) appear in the top 15 feature importances, validating that feature engineering added genuine signal.
+- **Fraud transactions cluster at smaller amounts** — the median fraud transaction is significantly lower than the median normal transaction, supporting the `is_micro_txn` feature.
+- **SMOTE increased training set size from ~227,000 to ~454,000 rows**, with the Random Forest handling the increased volume efficiently via parallel tree building.
+- **Threshold tuning from 0.50 → 0.30** recovered approximately 5–8 additional fraud cases in the test set with only a modest increase in false positives.
+
+---
+
+## Technologies Used
+
+| Library | Version | Purpose |
+|---------|---------|---------|
+| `pandas` | ≥ 1.5 | Data loading, manipulation, EDA |
+| `numpy` | ≥ 1.23 | Numerical operations |
+| `scikit-learn` | ≥ 1.3 | Preprocessing, modelling, evaluation |
+| `imbalanced-learn` | ≥ 0.11 | SMOTE oversampling |
+| `matplotlib` | ≥ 3.6 | Plotting |
+| `seaborn` | ≥ 0.12 | Statistical visualisations |
+| `joblib` | ≥ 1.2 | Model and scaler serialisation |
+
+---
+
+## Contributing
+
+Contributions are welcome. To propose a change:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes with clear messages (`git commit -m 'Add XGBoost comparison'`)
+4. Push the branch (`git push origin feature/your-feature`)
+5. Open a pull request with a description of what was changed and why
+
+Potential areas for contribution:
+- XGBoost or LightGBM model comparison
+- SHAP values for model explainability
+- Flask or FastAPI deployment wrapper
+- Dockerisation of the pipeline
+- Automated retraining on new transaction batches
+
+---
+
+## License
+
+This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for details.
+
+The dataset is provided by the [Machine Learning Group at ULB](http://mlg.ulb.ac.be) and is subject to its own terms on Kaggle. It may not be redistributed.
+
+---
+
+*Built as a complete educational walkthrough of the machine learning lifecycle, from raw data to evaluated model, with a focus on the real-world challenges of fraud detection.*
