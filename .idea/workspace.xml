@@ -5,9 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83c869e2-4c61-408a-b06c-aacb67b2151f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/1_home.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/2_single_prediction.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/3_batch_upload.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/4_model_insights.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/5_eda_explorer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/charts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/model_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/preprocessing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Phase1.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Phase1.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Phase3.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Phase3.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,25 +42,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/u/Documents/ML PROJECT/Fraud Detection",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.tabs",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/u/Documents/ML PROJECT/Fraud Detection&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
