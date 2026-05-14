@@ -5,18 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83c869e2-4c61-408a-b06c-aacb67b2151f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/1_home.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/2_single_prediction.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/3_batch_upload.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/4_model_insights.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/pages/5_eda_explorer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/charts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/model_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fraud-detection-app/utils/preprocessing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/saved models/jjjjjjj.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/saved models/streamlit.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

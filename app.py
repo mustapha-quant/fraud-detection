@@ -1,8 +1,8 @@
-# main entry point (run this)
+# main entry point
 # app.py
 import streamlit as st
 
-# ─── PAGE CONFIG ─────────────────────────────────────────────────────────
+# PAGE CONFIG
 # Must be the very first Streamlit command in the file
 st.set_page_config(
     page_title  = 'Fraud Detection ML',
@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state = 'expanded'
 )
 
-# ─── GLOBAL SIDEBAR CONTROLS ─────────────────────────────────────────────
+# GLOBAL SIDEBAR CONTROLS
 # These controls appear on every page
 with st.sidebar:
     st.title('🛡️ Fraud Detector')
@@ -39,7 +39,7 @@ with st.sidebar:
     st.caption('Built with scikit-learn + Streamlit')
     st.caption('Dataset: Kaggle Credit Card Fraud')
 
-# ─── LANDING PAGE ────────────────────────────────────────────────────────
+# LANDING PAGE
 st.title('Credit Card Fraud Detection')
 st.markdown(
     'A complete ML pipeline for real-time fraud scoring. '
